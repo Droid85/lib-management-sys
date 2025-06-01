@@ -110,10 +110,13 @@ class Library:
         return books
 
 def add_book_generator(func):
-    def wrapper(*args, **kwargs):
+    def wrapper(book, library, *args, **kwargs):
         print(f"Adding book...")
-        result = func(*args, **kwargs)
-        print(f"Book added to library")
+        result = func(book, library, *args, **kwargs)
+        print(f"Book {book} added to library")
+        print("[BOOKS IN LIBRARY]")
+        for b in library.books:
+            print(b)
 
         return result
     return wrapper
@@ -132,6 +135,9 @@ def remove_book_generator(func):
         print(f"Removing book...")
         result = func(book, library, *args, **kwargs)
         print(f"Book removed from library")
+        print("[BOOKS IN LIBRARY]")
+        for b in library.books:
+            print(b)
 
         return result
     return wrapper
@@ -148,14 +154,13 @@ book4 = Book(BookModel(title="Mort", author="Terry Pratchett", year=1987))
 magazine1 = Magazine(MagazineModel(name="Nintendo Power", number=13, month="January", year=1989))
 magazine2 = Magazine(MagazineModel(name="Pepper", number=21, month="June", year=1995))
 
-print(book1)
-
 myBooks = Library([book1, book2, book3, magazine1, magazine2])
 
 print(next(myBooks))
 print(next(myBooks))
 print(next(myBooks))
 
+print("\n[ADD BOOKS TO LIBRARY]")
 add_book_library(book4, myBooks)
 
 print(next(myBooks))
@@ -164,6 +169,7 @@ remove_book_library(book1, myBooks)
 
 myBooks.save_to_file("log.txt")
 
+print("\n[LOAD FROM FILE]")
 r = myBooks.load_from_file("log.txt")
 
 for book in r:
